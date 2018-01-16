@@ -15,11 +15,11 @@ Unfortunately some libraries doesn't have pretrained models like tflearn. In thi
 
 Weights can be downloaded from the link below:
 
-[Weights](https://www.dropbox.com/s/3rjode6oqhqtq0e/Archive.zip?dl=0)
+# [Weights](https://www.dropbox.com/s/3rjode6oqhqtq0e/Archive.zip?dl=0)
 
 
 
-# Recommended use
+## Recommended use
 
 VGG19 net has a lot of parameters and take a lot of memory so it is better to run through network until the point you want to fine tune. Than save it, and load from memory directly for next iterations. 
 
