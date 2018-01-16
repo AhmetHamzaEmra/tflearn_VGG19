@@ -1,10 +1,13 @@
+
+import tflearn
+from tflearn.layers.core import input_data, dropout, fully_connected
+from tflearn.layers.conv import conv_2d, max_pool_2d
+from tflearn.layers.estimator import regression
+
+
 def vgg19(num_classes):
     
-    import tflearn
-    from tflearn.layers.core import input_data, dropout, fully_connected
-    from tflearn.layers.conv import conv_2d, max_pool_2d
-    from tflearn.layers.estimator import regression
-
+    
     # Building 'VGG Network'
     input_layer = input_data(shape=[None, 224, 224, 3])
 
@@ -33,18 +36,24 @@ def vgg19(num_classes):
     block5_conv3 = conv_2d(block5_conv2, 512, 3, activation='relu', name='block5_conv3')
     block5_conv4 = conv_2d(block5_conv3, 512, 3, activation='relu', name='block5_conv4')
     block4_pool = max_pool_2d(block5_conv4, 2, strides=2, name = 'block4_pool')
+    flatten_layer = tflearn.layers.core.flatten (block4_pool, name='Flatten')
 
-    fc1 = fully_connected(block4_pool, 4096, activation='relu', restore=False)
+
+    fc1 = fully_connected(flatten_layer, 4096, activation='relu')
     dp1 = dropout(fc1, 0.5)
+    # layer below this are not restored!
     fc2 = fully_connected(dp1, 4096, activation='relu', restore= False)
     dp2 = dropout(fc2, 0.5)
+
     network = fully_connected(dp2, num_classes, activation='softmax', restore=False)
+
     regression = tflearn.regression(network, optimizer='adam',
                                 loss='categorical_crossentropy',
                                 learning_rate=0.001, restore=False)
     
     model = tflearn.DNN(regression, checkpoint_path='vgg-finetuning',
                         tensorboard_dir="./logs")
+
     model.load("vgg19.tflearn", weights_only=True)
     
     return model
